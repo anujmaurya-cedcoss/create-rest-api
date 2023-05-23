@@ -2,13 +2,19 @@
 namespace App\Acl;
 
 use Phalcon\Acl\Adapter\Memory;
-use Phalcon\Acl\Role;
-use Phalcon\Acl\Component;
+use Phalcon\Security\JWT\Token\Parser;
 
-function checkAccess($role, $component, $action)
+function checkAccess($token, $component, $action)
 {
-    if($role == '') $role = 'user';
-    
+    $tokenReceived = $token;
+    $parser = new Parser();
+
+    $tokenObject = $parser->parse($tokenReceived);
+    $role = $tokenObject->getClaims()->getPayload()['sub'];
+
+    if ($role == '')
+        $role = 'user';
+
     $acl = new Memory();
 
     $acl->addRole('admin');

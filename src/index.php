@@ -83,9 +83,8 @@ $app->before(
     function () {
         $role = $_GET['bearer'];
         $token = User\Token\generateToken($role);
-        echo $token; die;
         $arr = explode('/', $_GET['_url']);
-        $access = App\Acl\checkAccess($role, $arr[1], $arr[2]);
+        $access = App\Acl\checkAccess($token, $arr[1], $arr[2]);
         if (!$access) {
             echo "<h1>Not allowed !</h1>";
             die;
@@ -95,6 +94,7 @@ $app->before(
 
 $app->notFound(function () use ($app) {
     $app->response->setStatusCode(404, "Not Found")->sendHeaders();
-    echo '<h3>This is crazy, but this page was not found!</h3>';
+    echo '<h1>This is crazy, but this page was not found!</h1>';
 });
+
 $app->handle($_SERVER['REQUEST_URI']);

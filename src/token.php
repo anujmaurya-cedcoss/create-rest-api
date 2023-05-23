@@ -12,7 +12,7 @@ function generateToken($role)
     // Builder object
     $builder = new Builder($signer);
 
-    $now = new DateTimeImmutable();
+    $now = new \DateTimeImmutable();
     $issued = $now->getTimestamp();
     $notBefore = $now->modify('-1 minute')->getTimestamp();
     $expires = $now->modify('+1 day')->getTimestamp();
@@ -21,11 +21,10 @@ function generateToken($role)
     // Setup
     $builder
         ->setExpirationTime($expires) // exp
-        ->setId($role) // JTI id
         ->setIssuedAt($issued) // iat
         ->setIssuer('https://phalcon.io') // iss
         ->setNotBefore($notBefore) // nbf
-        ->setSubject('my subject for this claim') // sub
+        ->setSubject($role) // sub
         ->setPassphrase($passphrase) // password
     ;
 
