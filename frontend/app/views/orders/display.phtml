@@ -1,3 +1,10 @@
+<?php
+session_start();
+if ($_SESSION['role'] != 'admin') {
+    echo "<h3>Not Allowed !</h3>";
+}
+die;
+?>
 <table class="table">
     <caption>table</caption>
     <thead class="thead-dark">
@@ -12,8 +19,8 @@
     </thead>
     <tbody>
         <?php
-            foreach ($data as $key => $value) {
-                echo "<tr>
+        foreach ($data as $key => $value) {
+            echo "<tr>
                     <td scope=\"row\">$value[order_id]</td>
                     <td>$value[name]</td>
                     <td>$value[address]</td>
@@ -21,7 +28,7 @@
                     <td>$value[quantity]</td>
                     <td>$value[status]</td>
                     </tr>";
-            }
+        }
         ?>
     </tbody>
 </table>

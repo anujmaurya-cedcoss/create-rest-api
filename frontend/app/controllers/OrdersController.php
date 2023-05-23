@@ -14,7 +14,7 @@ class OrdersController extends Controller
     {
         // fetch all the data from products/get
         $ch = curl_init();
-        $url = "http://172.23.0.3/products/get?bearer=admin";
+        $url = "http://172.23.0.5/products/get?bearer=admin";
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -26,8 +26,12 @@ class OrdersController extends Controller
 
     public function placeAction()
     {
+        if ($_POST['name'] == '' || $_POST['quantity'] < 1) {
+            echo "<h3>Please fill all the fields correctly</h3>";
+            die;
+        }
         $ch = curl_init();
-        $url = "http://172.23.0.3/order/create?bearer=$_SESSION[role]";
+        $url = "http://172.23.0.5/order/create?bearer=$_SESSION[role]";
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
@@ -41,7 +45,7 @@ class OrdersController extends Controller
     public function displayAction()
     {
         $ch = curl_init();
-        $url = "http://172.23.0.3/orders/get?bearer=$_SESSION[role]";
+        $url = "http://172.23.0.5/orders/get?bearer=$_SESSION[role]";
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

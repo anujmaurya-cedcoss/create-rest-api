@@ -1,4 +1,5 @@
 <?php
+
 use Phalcon\Mvc\Controller;
 
 session_start();
@@ -17,21 +18,26 @@ class IndexController extends Controller
             'pass' => $_POST['pass'],
             'admin' => (bool) ($_POST['adminSignup'] == 'admin')
         ];
-        $ch = curl_init();
-        $url = "http://172.23.0.3/register?bearer=admin";
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $arr);
+        if ($arr['pass'] != '' && $arr['name'] != '') {
+            $ch = curl_init();
+            $url = "http://172.23.0.5/register?bearer=admin";
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $arr);
 
-        // Receive server response ...
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            // Receive server response ...
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $output = curl_exec($ch);
-        curl_close($ch);
-        if ($output) {
-            $this->response->redirect('/index/login');
+            $output = curl_exec($ch);
+            curl_close($ch);
+            if ($output) {
+                $this->response->redirect('/index/login');
+            } else {
+                echo "<h3>There was some error</h3>";
+                die;
+            }
         } else {
-            echo "<h3>There was some error</h3>";
+            echo "<h1>Enter Correct Details</h1>";
             die;
         }
     }
@@ -43,7 +49,7 @@ class IndexController extends Controller
     public function doLoginAction()
     {
         $ch = curl_init();
-        $url = "http://172.23.0.3/login?bearer=admin";
+        $url = "http://172.23.0.5/login?bearer=admin";
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
