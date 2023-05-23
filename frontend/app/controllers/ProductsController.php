@@ -18,5 +18,4 @@ class ProductsController extends Controller
         echo "<pre>";
         print_r($output); die;
     }
-    
 }

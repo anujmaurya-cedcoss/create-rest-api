@@ -1,4 +1,5 @@
 <?php
+
 use Phalcon\Mvc\Controller;
 
 session_start();
@@ -9,7 +10,8 @@ class OrdersController extends Controller
         // redirected to view
     }
 
-    public function createAction() {
+    public function createAction()
+    {
         // fetch all the data from products/get
         $ch = curl_init();
         $url = "http://172.23.0.3/products/get?bearer=admin";
@@ -22,7 +24,8 @@ class OrdersController extends Controller
         $this->view->data = json_decode($output);
     }
 
-    public function placeAction() {
+    public function placeAction()
+    {
         $ch = curl_init();
         $url = "http://172.23.0.3/order/create?bearer=$_SESSION[role]";
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -30,12 +33,13 @@ class OrdersController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $output = curl_exec($ch);
+        curl_exec($ch);
         curl_close($ch);
         $this->response->redirect('/orders/create');
     }
-    
-    public function displayAction() {
+
+    public function displayAction()
+    {
         $ch = curl_init();
         $url = "http://172.23.0.3/orders/get?bearer=$_SESSION[role]";
         curl_setopt($ch, CURLOPT_URL, $url);
