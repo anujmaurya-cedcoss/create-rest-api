@@ -78,6 +78,88 @@ $app->get(
     }
 );
 
+$app->post(
+    '/register',
+    function () {
+        $collection = $this->mongo->users;
+        $data = $_POST;
+        $status = $collection->insertOne($data);
+        return var_dump($status);
+    }
+);
+
+$app->post(
+    '/login',
+    function () {
+        $collection = $this->mongo->users;
+        $credentials = $_POST;
+        $admin = $credentials['admin'];
+        $user = $collection->findOne(['$and' => [['mail' => $_POST['mail']], ['pass' => $_POST['pass']]]]);
+        if ($admin) {
+            if ($user->admin == '1') {
+                $_SESSION['role'] = 'admin';
+                return $_SESSION['role'];
+            }
+        } else {
+            if ($user->mail == $_POST['mail'] && $user->mail != '') {
+                $_SESSION['role'] = 'user';
+                return $_SESSION['role'];
+            }
+        }
+        return "false";
+    }
+);
+
+$app->post(
+    '/order/create',
+    function () {
+        $payload = [
+            "name" => $_POST['name'],
+            "address" => $_POST['address'],
+            "product_id" => $_POST['product'],
+            "quantity" => $_POST['quantity'],
+            "status" => "placed",
+            "order_id" => uniqid()
+        ];
+        $collection = $this->mongo->orders;
+        $status = $collection->insertOne($payload);
+        var_dump($status);
+    }
+);
+
+$app->put(
+    '/order/update',
+    function () use ($app) {
+        $order = $app->request->getJsonRawBody();
+        $id = $order->id;
+        $status = $order->status;
+        $response = $this->mongo->orders->updateOne(["order_id" => (string) $id], ['$set' => ['status' => $status]]);
+        var_dump($response);
+    }
+);
+
+// Retrieves all products
+$app->get(
+    '/orders/get',
+    function () {
+        $collection = $this->mongo->orders;
+        $orderList = $collection->find();
+        $data = [];
+        foreach ($orderList as $order) {
+            $data[] = [
+                'name' => $order['name'],
+                'address' => $order['address'],
+                'quantity' => $order['quantity'],
+                'status' => $order['status'],
+                'order_id' => $order['order_id'],
+                'product_id' => $order['product_id']
+            ];
+        }
+        echo json_encode($data);
+    }
+);
+
+
 // checking for access
 $app->before(
     function () {

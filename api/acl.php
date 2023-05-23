@@ -12,8 +12,9 @@ function checkAccess($token, $component, $action)
     $tokenObject = $parser->parse($tokenReceived);
     $role = $tokenObject->getClaims()->getPayload()['sub'];
 
-    if ($role == '')
+    if ($role == '') {
         $role = 'user';
+    }
 
     $acl = new Memory();
 
@@ -27,9 +28,33 @@ function checkAccess($token, $component, $action)
             'get',
         ]
     );
+    $acl->addComponent(
+        'register',
+        []
+    );
+    $acl->addComponent(
+        'login',
+        []
+    );
+    $acl->addComponent(
+        'order',
+        [
+            'create',
+            'update',
+        ]
+    );
+    $acl->addComponent(
+        'orders',
+        [
+            'get'
+        ]
+    );
 
     $acl->allow('admin', '*', '*');
     $acl->allow('user', 'products', 'search');
-
+    $acl->allow('user', 'order', 'create');
+    $acl->allow('*', 'login', '*');
+    $acl->allow('*', 'register', '*');
+    
     return $acl->isAllowed("$role", "$component", "$action");
 }

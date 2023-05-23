@@ -1,14 +1,23 @@
 version: "3.3"
 services:
-  web-server:
+  api:
     build:
       dockerfile: php.Dockerfile
       context: .
     restart: always
     volumes:
-      - "./src/:/var/www/html/"
+      - "./api/:/var/www/html/"
     ports:
-      - "8080:80"
+      - "3003:80"
+  frontend:
+    build:
+      dockerfile: php.Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./frontend/:/var/www/html/"
+    ports:
+      - "4004:80"
   mysql-server:
     image: mysql:8.0.19
     restart: always
